@@ -42,12 +42,10 @@ public class PlayerController : MonoBehaviour
             distanceToGround = hit.distance;
             groundNormal = hit.normal;
 
-            if (distanceToGround < 0.8f){
+            if (distanceToGround < 1.8f){
                 onGround = true;
-                Debug.Log("On Ground");
             } else {
                 onGround = false;
-                Debug.Log("Off Ground");
             }
         }
 
