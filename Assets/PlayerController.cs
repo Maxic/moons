@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -38,7 +39,18 @@ public class PlayerController : MonoBehaviour
 
         // On ground determination
         RaycastHit hit = new RaycastHit();
-        if (Physics.Raycast(transform.position, -transform.up, out hit, 10)) {
+        Vector3 rayCastDirection = -transform.up;
+        // TODO: raycast from position to nearest planet
+
+        // Get planet closest to me
+        Collider planet = getClosestPlanet();
+        if(planet != null)
+        {
+            rayCastDirection = -(transform.position - planet.transform.position);
+        }
+
+        if (Physics.Raycast(transform.position, rayCastDirection, out hit, 10)) {
+
             distanceToGround = hit.distance;
             groundNormal = hit.normal;
 
@@ -52,5 +64,23 @@ public class PlayerController : MonoBehaviour
         // Rotation towards surface
         Quaternion toRotation  = Quaternion.FromToRotation(transform.up, groundNormal) * transform.rotation;
         transform.rotation = toRotation;
+    }
+
+
+    Collider getClosestPlanet()
+    {
+        Collider closestPlanet = null;
+        Array.ForEach(Physics.OverlapSphere(transform.position, 7f), c =>
+        {
+            if(c.transform != transform)
+            {
+                if( c.tag == "Planet")
+                {
+                    closestPlanet = c;
+                }
+            }
+        });
+
+        return closestPlanet;
     }
 }
